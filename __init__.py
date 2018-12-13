@@ -15,7 +15,6 @@
 import os
 import traceback
 import logging
-from os.path import dirname
 
 from adapt.intent import IntentBuilder
 from mycroft.skills.core import MycroftSkill, intent_handler
@@ -32,21 +31,23 @@ class rememberSkill(MycroftSkill):
 
     def __init__(self):
         super(rememberSkill, self).__init__(name="rememberSkill")
-        self.remfile = (dirname(__file__)+"/rememberlist.txt")
+        self.remfile = (self.file_system.path+"/rememberlist.txt")
 
     @intent_handler(IntentBuilder("").require("Did").require("You").require("Remember").build())
     def handle_whatdidyou__intent(self, message):
         try:
             remlist = open(self.remfile,"r")
             rememberphrases = remlist.read()
+            alist = rememberphrases.split("\n")
             if not rememberphrases:
                self.speak_dialog("sorry")
             else:
-               search = rememberphrases.rfind("\n")
-               rememberphrases = rememberphrases[:search] + "" + rememberphrases[search+1:]
-               search = rememberphrases.rfind("\n")
-               rememberphrases = rememberphrases[:search] + " and " + rememberphrases[search+1:]
-               rememberphrases = rememberphrases.replace('\n', ', ')
+               if len(alist) > 2:
+                   search = rememberphrases.rfind("\n")
+                   rememberphrases = rememberphrases[:search] + "" + rememberphrases[search+1:]
+                   search = rememberphrases.rfind("\n")
+                   rememberphrases = rememberphrases[:search] + " and " + rememberphrases[search+1:]
+                   rememberphrases = rememberphrases.replace('\n', ', ')
                self.speak_dialog('iremembered', {'REMEMBER': rememberphrases})
             remlist.close()
         except:
@@ -61,7 +62,6 @@ class rememberSkill(MycroftSkill):
             remlist.write(filePhrase)
             self.speak_dialog('gotphrase', {'REMEMBER': rememberPhrase})
             remlist.close()
-            #self.speak_dialog('result', {'REMEMBER': rigfrom, 'TO': origto, 'HOURS': hours, 'DISTANCE': dist})
              
         except Exception as e:
             logging.error(traceback.format_exc())
@@ -78,7 +78,6 @@ class rememberSkill(MycroftSkill):
         found = 0
         for index,phrase in enumerate(plist):
             word = phrase.split(" ")
-            #print(word)
             if " ".join(word[:2]) in rememberPhrase:
                 found = 1
                 should_delete = self.get_response('delete', {'PHRASE': phrase})
@@ -87,7 +86,6 @@ class rememberSkill(MycroftSkill):
                 if any(word in resp_delete for word in yes_words):
                     try:
                         del olist[index]
-                        #print(olist)
                         remlist = open(self.remfile,"w")
                         for item in olist:
                             remlist.write(item)
