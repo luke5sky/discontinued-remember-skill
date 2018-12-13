@@ -15,6 +15,7 @@
 import os
 import traceback
 import logging
+from os.path import dirname
 
 from adapt.intent import IntentBuilder
 from mycroft.skills.core import MycroftSkill, intent_handler
@@ -31,17 +32,22 @@ class rememberSkill(MycroftSkill):
 
     def __init__(self):
         super(rememberSkill, self).__init__(name="rememberSkill")
+        self.remfile = (dirname(__file__)+"/rememberlist.txt")
 
     @intent_handler(IntentBuilder("").require("Did").require("You").require("Remember").build())
     def handle_whatdidyou__intent(self, message):
         try:
-            remlist = open("/opt/mycroft/skills/remember-skill/rememberlist.txt","r")
+            remlist = open(self.remfile,"r")
             rememberphrases = remlist.read()
             if not rememberphrases:
                self.speak_dialog("sorry")
             else:
-               rememberphrases = "I remember: "+rememberphrases.replace('\n', ', ')
-               self.speak(rememberphrases)
+               search = rememberphrases.rfind("\n")
+               rememberphrases = rememberphrases[:search] + "" + rememberphrases[search+1:]
+               search = rememberphrases.rfind("\n")
+               rememberphrases = rememberphrases[:search] + " and " + rememberphrases[search+1:]
+               rememberphrases = rememberphrases.replace('\n', ', ')
+               self.speak_dialog('iremembered', {'REMEMBER': rememberphrases})
             remlist.close()
         except:
             self.speak_dialog("sorry")
@@ -50,10 +56,9 @@ class rememberSkill(MycroftSkill):
     def handle_remember__intent(self, message):
         rememberPhrase = message.data.get("WhatToRemember", None)
         try:
-            remlist = open("/opt/mycroft/skills/remember-skill/rememberlist.txt","a")
-            print(rememberPhrase)
-            rememberPhrase = rememberPhrase+"\n"
-            remlist.write(rememberPhrase)
+            remlist = open(self.remfile,"a")
+            filePhrase = rememberPhrase+"\n"
+            remlist.write(filePhrase)
             self.speak_dialog('gotphrase', {'REMEMBER': rememberPhrase})
             remlist.close()
             #self.speak_dialog('result', {'REMEMBER': rigfrom, 'TO': origto, 'HOURS': hours, 'DISTANCE': dist})
@@ -61,32 +66,43 @@ class rememberSkill(MycroftSkill):
         except Exception as e:
             logging.error(traceback.format_exc())
             self.speak_dialog('sorry')
-        logger.info("Request finished")
     
     @intent_handler(IntentBuilder("").require("Forget").require("Phrase").optionally("RememberPhrase").build())
     def handle_delete__intent(self, message):
         rememberPhrase = message.data.get("RememberPhrase", None)
-        
-        should_delete = self.get_response("Should i forget: " + rememberPhrase)
-#self.should_getskills = self.get_response('ask.getskills') # ask user if we should give him a list of all his skills.
-        yes_words = set(self.translate_list('yes')) # get list of confirmation words
-        resp_delete = should_delete.split()
-        if any(word in resp_delete for word in yes_words):
-            self.speak("Consider it done")
-        else:
-            self.speak("I will hold on to this phrase")
-        #self.listSkills() # execute function listSkills -> if user confirmed -> give him a list of all his skills, else -> exit
-
-#    def listSkills(self):
-#        if self.should_getskills: # if user said something
-#           resp_getskills = self.should_getskills.split() # split user sentence into list
-#           if any(word in resp_getskills for word in self.yes_words): # if any of the words from the user sentences is yes
-#              self.speak_dialog('my.skills') # Introduction that we will give user list of skills
-#              self.speak(self.myskills.strip()) # tell user list of skills
-#           else: # no word in sentence from user was yes
-#              self.speak_dialog('no.skills') # give user feedback
-
-        
+        remlist = open(self.remfile,"r")
+        plist = remlist.readlines()
+        remlist.close()
+        olist = plist
+        plist = [x.strip() for x in plist]
+        found = 0
+        for index,phrase in enumerate(plist):
+            word = phrase.split(" ")
+            #print(word)
+            if " ".join(word[:2]) in rememberPhrase:
+                found = 1
+                should_delete = self.get_response('delete', {'PHRASE': phrase})
+                yes_words = set(self.translate_list('yes')) # get list of confirmation words
+                resp_delete = should_delete.split()
+                if any(word in resp_delete for word in yes_words):
+                    try:
+                        del olist[index]
+                        #print(olist)
+                        remlist = open(self.remfile,"w")
+                        for item in olist:
+                            remlist.write(item)
+                        remlist.close()
+                        self.speak_dialog("forgotten")
+                    except Exception as e:
+                        logging.error(traceback.format_exc())
+                        self.speak_dialog('sorry')
+                    
+                else:
+                    self.speak_dialog("holdon")
+            #print(phrase)
+        if found == 0:
+           self.speak("i am sorry, i couldn't find a phrase matching your request")
+        remlist.close()
 
     def shutdown(self):
         super(rememberSkill, self).shutdown()
