@@ -2,7 +2,7 @@
 Remember Skill for MyCroft
 
 ## Description 
-Ask MyCroft to rember things for you.
+Ask MyCroft to remember things for you.
 
 HowToUse:
 
