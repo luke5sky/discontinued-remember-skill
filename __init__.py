@@ -34,7 +34,7 @@ class rememberSkill(MycroftSkill):
         self.remfile = (self.file_system.path+"/rememberlist.txt") # MY LIST, MY PRECIOUS, MY PRECIOUS..... GOLLUM
 
     @intent_handler(IntentBuilder("").require("Did").require("You").require("Remember").build())
-    def handle_whatdidyou__intent(self, message): # user wants to know what we've got
+    def handle_whatdidyou__intent(self): # user wants to know what we've got
         try: # try to open our remember list readonly and give user all phrases
             remlist = open(self.remfile,"r") # open file readonly
             rememberphrases = remlist.read() # read file
