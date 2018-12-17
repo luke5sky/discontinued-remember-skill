@@ -84,7 +84,6 @@ class rememberSkill(MycroftSkill):
         olist = plist
         plist = [x.strip() for x in plist] # delete whitespaces
         found = 0 # if 1 we found something, 0 means nothing found
-        print(rememberPhrase)
         try: # Try to get an exact match of the given phrase to delete
             if rememberPhrase in plist and found == 0: # if we could find the given phrase in the list do following
                found = 1 # yes we found something
