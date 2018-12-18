@@ -1,0 +1,9 @@
+{   
+    "utterance": "Remember get some bread",
+    "intent_type": "RememberIntent",
+    "expected_dialog": "gotphrase",
+    "intent": {
+        "Remember": "remember",
+        "WhatToRemember": "get some bread"
+    }
+}

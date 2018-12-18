@@ -36,8 +36,8 @@ class rememberSkill(MycroftSkill):
             remlist = open(self.remfile,"x")
             remlist.close()
             
-    @intent_handler(IntentBuilder("").require("Did").require("You").require("Remember").build())
-    def handle_whatdidyou__intent(self): # user wants to know what we've got
+    @intent_handler(IntentBuilder("WhatToRememberIntent").require("Did").require("You").require("Remember").build())
+    def WhatToRememberIntent(self, message): # user wants to know what we've got
         try: # try to open our remember list readonly and give user all phrases
             remlist = open(self.remfile,"r") # open file readonly
             rememberphrases = remlist.read() # read file
@@ -56,8 +56,8 @@ class rememberSkill(MycroftSkill):
         except:
             self.speak_dialog("sorry") # oh damn, something happened
         
-    @intent_handler(IntentBuilder("").require("Remember").require("WhatToRemember").build())
-    def handle_remember__intent(self, message): # user wants us to remember something
+    @intent_handler(IntentBuilder("RememberIntent").require("Remember").require("WhatToRemember").build())
+    def RememberIntent(self, message): # user wants us to remember something
         rememberPhrase = message.data.get("WhatToRemember", None) # get phrase user wants us to remember
         try: # if user said something like "remember phrase get some milk" we don't want phrase to be saved, brakes skill a bit, we don't wanna skill broken, we like skill
             rememberPhrase = rememberPhrase.replace('phrase ', '') # Phrase Evanesca! if you got this reference, you should stop reading comments in code and go out a bit, have fun with friends or watch birds or something like that
@@ -77,8 +77,8 @@ class rememberSkill(MycroftSkill):
             logging.error(traceback.format_exc())
             self.speak_dialog('sorry') # ... but we are always sorry
     
-    @intent_handler(IntentBuilder("").require("Forget").require("Phrase").optionally("RememberPhrase").optionally("All").build())
-    def handle_delete__intent(self, message): # function for forgetting/deleting phrases from the list
+    @intent_handler(IntentBuilder("DeleteIntent").require("Forget").require("Phrase").optionally("RememberPhrase").optionally("All").build())
+    def DeleteIntent(self, message): # function for forgetting/deleting phrases from the list
         rememberPhrase = message.data.get("RememberPhrase", None) # get phrase from spoken sentence
         delall = message.data.get("All", None) # check if there is ALL in the sentence, maybe user wants to clear the complete list
         remlist = open(self.remfile,"r") # open file with remembered phrases readonly

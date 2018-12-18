@@ -5,6 +5,6 @@
         "You": "you",
         "Remember": "remember"
     },
-    "intent_type": "handle_whatdidyou__intent",
+    "intent_type": "WhatToRememberIntent",
     "utterance": "What did you remember?"
 }

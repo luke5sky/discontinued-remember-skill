@@ -1,10 +1,13 @@
 {
     "expected_dialog": "delete",
+    "responses": ["yes"],
+    "expected_dialog": "forgotten",
+    "evaluation_timeout": "10",
     "intent": {
         "Forget": "forget",
         "Phrase": "phrase",
         "RememberPhrase": "get some milk"
     },
-    "intent_type": "handle_delete__intent",
+    "intent_type": "DeleteIntent",
     "utterance": "Forget phrase get some milk"
 }
