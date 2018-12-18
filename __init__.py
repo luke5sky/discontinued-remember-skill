@@ -36,7 +36,7 @@ class rememberSkill(MycroftSkill):
     @intent_handler(IntentBuilder("").require("Did").require("You").require("Remember").build())
     def handle_whatdidyou__intent(self): # user wants to know what we've got
         try: # try to open our remember list readonly and give user all phrases
-            remlist = open(self.remfile,"r") # open file readonly
+            remlist = open(self.remfile,"r+") # open file readonly
             rememberphrases = remlist.read() # read file
             alist = rememberphrases.split("\n") # split line by line and make a nice list
             if not rememberphrases:
@@ -63,7 +63,7 @@ class rememberSkill(MycroftSkill):
         try: # lets try to remember
             if rememberPhrase: # we need a phrase to remember
                if len(rememberPhrase) > 4: # phrase should be at least 5 characters
-                  remlist = open(self.remfile,"a") # open file but only append don't overwrite
+                  remlist = open(self.remfile,"a+") # open file but only append don't overwrite
                   filePhrase = rememberPhrase+"\n" # we want newlines
                   remlist.write(filePhrase) # write to file
                   self.speak_dialog('gotphrase', {'REMEMBER': rememberPhrase}) # tell user we did it and be proud, good boy mycroft... or girl... what is mycroft? NOTE: make gender-skill
@@ -78,7 +78,7 @@ class rememberSkill(MycroftSkill):
     def handle_delete__intent(self, message): # function for forgetting/deleting phrases from the list
         rememberPhrase = message.data.get("RememberPhrase", None) # get phrase from spoken sentence
         delall = message.data.get("All", None) # check if there is ALL in the sentence, maybe user wants to clear the complete list
-        remlist = open(self.remfile,"r") # open file with remembered phrases readonly
+        remlist = open(self.remfile,"r+") # open file with remembered phrases readonly
         plist = remlist.readlines() # get list from file
         remlist.close() # we don't need to read anymore
         olist = plist
