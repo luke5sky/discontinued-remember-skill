@@ -1,0 +1,10 @@
+{
+    "expected_dialog": "delete",
+    "intent": {
+        "Forget": "forget",
+        "Phrase": "phrase",
+        "RememberPhrase": "get some milk"
+    },
+    "intent_type": "handle_delete__intent",
+    "utterance": "Forget phrase get some milk"
+}
