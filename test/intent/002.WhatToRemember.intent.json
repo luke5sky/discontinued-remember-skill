@@ -1,10 +1,10 @@
-{
+{   
+    "utterance": "What did you remember",
+    "intent_type": "WhatToRememberIntent",
     "expected_dialog": "iremembered",
     "intent": {
         "Did": "did",
         "You": "you",
         "Remember": "remember"
-    },
-    "intent_type": "WhatToRememberIntent",
-    "utterance": "What did you remember?"
+    }
 }
