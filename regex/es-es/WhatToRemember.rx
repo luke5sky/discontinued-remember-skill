@@ -1,1 +1,1 @@
-(recordar) (?P<WhatToRemember>.*)
+(recuerda) (?P<WhatToRemember>.*)
