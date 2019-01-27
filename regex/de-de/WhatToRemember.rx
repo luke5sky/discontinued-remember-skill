@@ -1,4 +1,1 @@
-(erinneren) (?P<WhatToRemember>.*)
 (erinnere) (?P<WhatToRemember>.*)
-(merke) (?P<WhatToRemember>.*)
-(gemerkt) (?P<WhatToRemember>.*)

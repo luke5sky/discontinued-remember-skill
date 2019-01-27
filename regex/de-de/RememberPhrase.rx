@@ -1,6 +1,2 @@
-(Eintrag) (?P<RememberPhrase>.*)
-(Einträge) (?P<RememberPhrase>.*)
-(Ausdruck) (?P<RememberPhrase>.*)
-(Ausrdücke) (?P<RememberPhrase>.*)
 (Phrase) (?P<RememberPhrase>.*)
 (Phrasen) (?P<RememberPhrase>.*)
