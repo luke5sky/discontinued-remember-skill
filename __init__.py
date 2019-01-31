@@ -15,6 +15,7 @@
 import os
 import traceback
 import logging
+import re
 
 from adapt.intent import IntentBuilder
 from mycroft.skills.core import MycroftSkill, intent_handler
@@ -58,6 +59,10 @@ class rememberSkill(MycroftSkill):
         
     @intent_handler(IntentBuilder("RememberIntent").require("Remember").require("WhatToRemember").build())
     def RememberIntent(self, message): # user wants us to remember something
+        utt=(message.data.get("utterance"))
+        if re.match("what did you", utt) is not None: # workaround for what did you remember?
+           self.WhatToRememberIntent(message)
+           return None
         rememberPhrase = message.data.get("WhatToRemember", None) # get phrase user wants us to remember
         try: # if user said something like "remember phrase get some milk" we don't want phrase to be saved, brakes skill a bit, we don't wanna skill broken, we like skill
             rememberPhrase = rememberPhrase.replace('phrase ', '') # Phrase Evanesca! if you got this reference, you should stop reading comments in code and go out a bit, have fun with friends or watch birds or something like that
