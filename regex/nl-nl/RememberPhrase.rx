@@ -1,0 +1,2 @@
+(uitdrukking) (?P<RememberPhrase>.*)
+(uitdrukkingen) (?P<RememberPhrase>.*)
